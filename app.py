@@ -8,6 +8,8 @@ from langchain.chains import RetrievalQA
 from langchain.llms import HuggingFaceHub
 from langchain.embeddings.huggingface import HuggingFaceEmbeddings
 
+os.environ["STREAMLIT_SERVER_ENABLE_CORS"] = "false"
+
 # Function to extract text from PDF
 def load_pdf(pdf_file):
     try:
