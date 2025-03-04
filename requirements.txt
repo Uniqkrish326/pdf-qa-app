@@ -1,7 +1,9 @@
+streamlit
+pandas
+numpy
 langchain
 langchain-community
-streamlit
-PyPDF2
-python-dotenv
-faiss-cpu
 sentence-transformers
+PyPDF2
+faiss-cpu
+python-dotenv
