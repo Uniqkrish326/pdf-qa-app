@@ -25,20 +25,33 @@ def split_text(text):
 
 # Function to query Gemini API
 def query_gemini(query, context=""):
-    headers = {"Content-Type": "application/json"}
-    payload = {"contents": [{"parts": [{"text": f"Context: {context}\nUser Question: {query}"}]}]}
+    headers = {
+        "Content-Type": "application/json"
+    }
+    payload = {
+        "contents": [
+            {"parts": [{"text": f"Context: {context}\nUser Question: {query}"}]}
+        ]
+    }
 
     try:
-        response = requests.post(GEMINI_URL, headers=headers, json=payload)
+        response = requests.post(GEMINI_URL, headers=headers, json=payload, timeout=15)
 
         if response.status_code == 200:
             result = response.json()
-            return result["candidates"][0]["content"]["parts"][0]["text"]
+            if "candidates" in result and len(result["candidates"]) > 0:
+                return result["candidates"][0]["content"]["parts"][0]["text"]
+            else:
+                return "⚠️ No valid response from Gemini API."
         else:
-            return f"⚠️ Error {response.status_code}: {response.text}"
+            return f"⚠️ API Error {response.status_code}: {response.text}"
 
+    except requests.exceptions.Timeout:
+        return "🚨 Request timed out! The API took too long to respond."
+    except requests.exceptions.ConnectionError:
+        return "🚨 Network error! Check your internet connection or API URL."
     except requests.exceptions.RequestException as e:
-        return f"🚨 Network Error: {e}"
+        return f"🚨 Request failed: {str(e)}"
 
 # Streamlit app setup
 def main():
